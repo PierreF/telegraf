@@ -5,6 +5,10 @@ function disable_systemd {
     rm -f /lib/systemd/system/telegraf.service
 }
 
+function disable_upstart {
+    rm -f /etc/init/telegraf.conf
+}
+
 function disable_update_rcd {
     update-rc.d -f telegraf remove
     rm -f /etc/init.d/telegraf
@@ -38,6 +42,8 @@ elif [[ -f /etc/debian_version ]]; then
 	which systemctl &>/dev/null
 	if [[ $? -eq 0 ]]; then
 	    disable_systemd
+    elif which initctl &>/dev/null; then
+        disable_upstart
 	else
 	    # Assuming sysv
 	    disable_update_rcd
